@@ -1,0 +1,8 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Exec=curl -L https://raw.githubusercontent.com/the-outcaster/sm64-steam-deck-builder/main/sm64-steam-deck-builder.sh | sh
+Icon=steamdeck-gaming-return
+Name=Super Mario 64 Steam Deck Builder and Launcher
+StartupNotify=false
+Terminal=true
+Type=Application
