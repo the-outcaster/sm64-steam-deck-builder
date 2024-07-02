@@ -2,7 +2,7 @@
 
 clear
 
-echo -e "Super Mario 64 Steam Deck builder - script by Linux Gaming Central\n"
+echo -e "Super Mario 64 Steam Deck builder - script by The Outcaster\n"
 
 title="Super Mario 64 Steam Deck Builder"
 
@@ -60,7 +60,6 @@ sub_menu() {
 	FALSE INSTALL_$1 "Install $1"\
 	FALSE UPDATE_$1 "Update $1"\
 	FALSE PLAY_$1 "Play $1"\
-	FALSE STEAM_$1 "Add $1 as a non-Steam shortcut"\
 	FALSE EDIT_$1 "Adjust options for $1"\
 	FALSE UNINSTALL_$1 "Uninstall $1 (warning: save data may be lost! Back it up first!)"\
 	TRUE EXIT "Exit this menu."
@@ -137,24 +136,6 @@ play() {
 	fi
 }
 
-add_to_steam() {
-	fork=$1
-	
-	# temporarily download some python scripts, execute them, then remove them when we're done
-	wget https://raw.githubusercontent.com/linuxgamingcentral/Steam-Shortcut-Manager/master/shortcuts.py
-	wget https://raw.githubusercontent.com/linuxgamingcentral/Steam-Shortcut-Manager/master/crc_algorithms.py
-	if [ $USER != "deck" ]; then
-		python shortcuts.py "$HOME/.steam/debian-installation/userdata/$STEAMID/config/shortcuts.vdf" "$1" "$HOME/Applications/$1/build/$REGION${PC}/sm64.$REGION" $HOME/Applications/$1/build/$REGION${PC}/ "" "" "" 0 0 1 0 0 SM64
-		python shortcuts.py "$HOME/.steam/debian-installation/userdata/$STEAMID/config/shortcuts.vdf" "$1" "$HOME/Applications/$1/build/$REGION${PC}/sm64.$REGION.f3dex2e" $HOME/Applications/$1/build/$REGION${PC}/ "" "" "" 0 0 1 0 0 SM64
-	else
-		python shortcuts.py "$HOME/.local/share/Steam/userdata/$STEAMID/config/shortcuts.vdf" "$1" "$HOME/Applications/$1/build/$REGION${PC}/sm64.$REGION" $HOME/Applications/$1/build/$REGION${PC}/ "" "" "" 0 0 1 0 0 SM64
-		python shortcuts.py "$HOME/.local/share/Steam/userdata/$STEAMID/config/shortcuts.vdf" "$1" "$HOME/Applications/$1/build/$REGION${PC}/sm64.$REGION.f3dex2e" $HOME/Applications/$1/build/$REGION${PC}/ "" "" "" 0 0 1 0 0 SM64
-	fi
-	rm shortcuts.py crc_algorithms.py
-	rm -rf __pycache__
-	info "$1 added as a non-Steam shortcut! Note if Steam is open you'll need to restart it to see the changes."
-}
-
 edit_config() {
 	config_file=$1
 
@@ -220,15 +201,6 @@ SM64EX=sm64ex
 SM64EX_ALO=sm64ex-alo
 RENDER96=Render96ex
 
-# get Steam ID - for adding forks as a non-Steam shortcut
-if [ $USER != "deck" ]; then
-	STEAMID=$(find ~/.steam/debian-installation/userdata/ -mindepth 1 -maxdepth 1 -type d | sed -n '2p')
-else
-	STEAMID=$(find ~/.local/share/Steam/userdata/ -mindepth 1 -maxdepth 1 -type d | sed -n '1p')
-fi
-STEAMID=$(basename "$STEAMID")
-echo -e "Steam ID is $STEAMID\n"
-
 cd $HOME
 mkdir -p Applications
 cd Applications
@@ -259,9 +231,6 @@ elif [ "$Choice" == "$SM64" ]; then
 	elif [ "$Choice" == "PLAY_$SM64" ]; then
 		play $SM64
 
-	elif [ "$Choice" == "STEAM_$SM64" ]; then
-		add_to_steam $SM64
-	
 	elif [ "$Choice" == "EDIT_$SM64" ]; then
 		edit_config "$SM64/build/$REGION${PC}/sm64config.txt"
 
@@ -287,9 +256,6 @@ elif [ "$Choice" == "$SM64PLUS" ]; then
 
 	elif [ "$Choice" == "PLAY_$SM64PLUS" ]; then
 		play $SM64PLUS
-
-	elif [ "$Choice" == "STEAM_$SM64PLUS" ]; then
-		add_to_steam $SM64PLUS
 	
 	elif [ "$Choice" == "EDIT_$SM64PLUS" ]; then
 		edit_config "$HOME/.config/SM64Plus/settings.ini"
@@ -317,9 +283,6 @@ elif [ "$Choice" == "$SM64EX" ]; then
 	elif [ "$Choice" == "PLAY_$SM64EX" ]; then
 		play $SM64EX
 
-	elif [ "$Choice" == "STEAM_$SM64EX" ]; then
-		add_to_steam $SM64EX
-
 	elif [ "$Choice" == "EDIT_$SM64EX" ]; then
 		edit_config "$HOME/.local/share/$SM64EX/sm64config.txt"
 
@@ -345,9 +308,6 @@ elif [ "$Choice" == "$SM64EX_ALO" ]; then
 
 	elif [ "$Choice" == "PLAY_$SM64EX_ALO" ]; then
 		play $SM64EX_ALO
-
-	elif [ "$Choice" == "STEAM_$SM64_ALO" ]; then
-		add_to_steam $SM64_ALO
 
 	elif [ "$Choice" == "EDIT_$SM64EX_ALO" ]; then
 		edit_config "$HOME/.local/share/$SM64EX/sm64config.txt"
@@ -375,9 +335,6 @@ elif [ "$Choice" == "$RENDER96" ]; then
 
 	elif [ "$Choice" == "PLAY_$RENDER96" ]; then
 		play $RENDER96
-
-	elif [ "$Choice" == "STEAM_$RENDER96" ]; then
-		add_to_steam $RENDER96
 
 	elif [ "$Choice" == "EDIT_$RENDER96" ]; then
 		edit_config "$HOME/.local/share/$SM64EX/sm64config.txt"
