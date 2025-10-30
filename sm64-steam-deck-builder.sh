@@ -91,6 +91,9 @@ install() {
 		echo -e "Cloning repo...\n"
 		git clone https://github.com/$2/$1.git
 
+		echo -e "Patching armips.cpp...\n"
+		sed -i '1s;^;/* SM64_BUILDER_FIX */\n#include <cstdint>\n;' "$HOME/Applications/sm64-port/tools/armips.cpp"
+
 		echo -e "Copying ROM...\n"
 		cp $HOME/$ROM $1/
 		cd $1
@@ -372,7 +375,7 @@ elif [ "$Choice" == "OPTIONS" ]; then
 			sudo pacman-key --populate archlinux holo
 
 			echo -e "Installing essential build tools...\n"
-			sudo pacman -S --needed --noconfirm base-devel "$(cat /usr/lib/modules/$(uname -r)/pkgbase)-headers"
+			sudo pacman -S --needed --noconfirm base-devel "$(cat /usr/lib/modules/$(uname -r)/pkgbase)-headers" alsa-lib libpulse
 
 			# some additional commands needed to install SM64Plus
 			if ( question "Additional tools are required to install $SM64PLUS. Would you like to install these?" ); then
